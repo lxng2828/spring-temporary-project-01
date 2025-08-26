@@ -8,14 +8,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.vtlong.my_spring_boot_project.exception.AppException;
+import com.vtlong.my_spring_boot_project.exception.ExceptionCode;
 import com.vtlong.my_spring_boot_project.model.RoleType;
 import com.vtlong.my_spring_boot_project.model.User;
 import com.vtlong.my_spring_boot_project.repository.UserRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Component
-@Slf4j
 public class DataInitializer implements CommandLineRunner {
 
     @Autowired
@@ -26,10 +25,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("Starting data initialization...");
-        
         if (userRepository.existsByEmail("admin@example.com")) {
-            log.info("Admin user already exists, skipping initialization");
             return;
         }
 
@@ -42,13 +38,9 @@ public class DataInitializer implements CommandLineRunner {
                 .build();
 
         try {
-            User savedUser = userRepository.save(adminUser);
-            log.info("Successfully created admin user with ID: {}", savedUser.getId());
-            log.info("Admin user created with roles: {}", savedUser.getRoles());
+            userRepository.save(adminUser);
         } catch (Exception e) {
-            log.error("Failed to create admin user: {}", e.getMessage());
+            throw new AppException("Failed to create admin user", ExceptionCode.INTERNAL_SERVER_ERROR);
         }
-        
-        log.info("Data initialization completed");
     }
 }
