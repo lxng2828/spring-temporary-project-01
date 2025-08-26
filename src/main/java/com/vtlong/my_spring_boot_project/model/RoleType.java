@@ -2,7 +2,6 @@ package com.vtlong.my_spring_boot_project.model;
 
 public enum RoleType {
     ADMIN("ADMIN", "Administrator"),
-    MODERATOR("MODERATOR", "Moderator"),
     USER("USER", "Regular User");
 
     private final String code;
