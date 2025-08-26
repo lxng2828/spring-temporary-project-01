@@ -18,9 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Index;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
@@ -64,17 +62,10 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @ManyToMany
-    @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
-        indexes = {
-            @Index(name = "idx_user_roles_user_id", columnList = "user_id"),
-            @Index(name = "idx_user_roles_role_id", columnList = "role_id")
-        }
-    )
-    private Set<Role> roles;
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", length = 20)
+    private Set<RoleType> roles;
 
     @NotBlank(message = "First name is required")
     @Size(max = 50, message = "First name must not exceed 50 characters")
